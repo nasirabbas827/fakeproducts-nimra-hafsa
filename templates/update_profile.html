@@ -1,0 +1,222 @@
+{% extends "base.html" %}
+
+{% block title %}Update Profile{% endblock %}
+
+{% block content %}
+<style>
+    /* Profile Update Page Styling */
+    .profile-container {
+        max-width: 600px;
+        margin: 40px auto;
+        padding: 30px;
+        background-color: white;
+        border-radius: 15px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .page-title {
+        color: #2c3e50;
+        text-align: center;
+        font-size: 32px;
+        margin-bottom: 30px;
+        padding-bottom: 15px;
+        border-bottom: 2px solid #4CAF50;
+    }
+
+    /* Profile Picture Section */
+    .profile-picture-section {
+        text-align: center;
+        margin-bottom: 30px;
+        padding: 20px;
+        background-color: #f8f9fa;
+        border-radius: 12px;
+    }
+
+    .profile-picture-label {
+        color: #666;
+        font-size: 18px;
+        margin-bottom: 15px;
+        display: block;
+    }
+
+    .profile-picture {
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 4px solid #4CAF50;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        margin: 10px auto;
+        display: block;
+    }
+
+    /* Form Styling */
+    .update-form {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        display: block;
+        color: #2c3e50;
+        font-size: 16px;
+        margin-bottom: 8px;
+        font-weight: bold;
+    }
+
+    .form-group input,
+    .form-group select {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid #ddd;
+        border-radius: 8px;
+        font-size: 16px;
+        transition: border-color 0.3s ease;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+        outline: none;
+        border-color: #4CAF50;
+    }
+
+    /* File Input Styling */
+    .file-input-wrapper {
+        position: relative;
+        margin-top: 15px;
+    }
+
+    .file-input-label {
+        display: inline-block;
+        padding: 12px 20px;
+        background-color: #4CAF50;
+        color: white;
+        border-radius: 25px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .file-input-label:hover {
+        background-color: #45a049;
+    }
+
+    input[type="file"] {
+        opacity: 0;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        cursor: pointer;
+    }
+
+    /* Submit Button */
+    .submit-btn {
+        background-color: #4CAF50;
+        color: white;
+        padding: 15px 30px;
+        border: none;
+        border-radius: 25px;
+        font-size: 18px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        width: 100%;
+        margin-top: 20px;
+    }
+
+    .submit-btn:hover {
+        background-color: #45a049;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+
+    /* Error Messages */
+    .errorlist {
+        color: #ff4444;
+        list-style: none;
+        padding: 10px;
+        margin: 5px 0;
+        background-color: #ffe6e6;
+        border-radius: 8px;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 600px) {
+        .profile-container {
+            margin: 20px;
+            padding: 20px;
+        }
+
+        .page-title {
+            font-size: 24px;
+        }
+
+        .profile-picture {
+            width: 150px;
+            height: 150px;
+        }
+
+        .submit-btn {
+            padding: 12px 24px;
+            font-size: 16px;
+        }
+    }
+</style>
+
+<div class="profile-container">
+    <h2 class="page-title">Update Your Profile</h2>
+
+    <form method="post" enctype="multipart/form-data" class="update-form">
+        {% csrf_token %}
+
+        <!-- Profile Picture Section -->
+        {% if form.instance.profile_picture %}
+        <div class="profile-picture-section">
+            <span class="profile-picture-label">Current Profile Picture</span>
+            <img src="{{ form.instance.profile_picture.url }}" alt="Profile Picture" class="profile-picture">
+            
+            <div class="file-input-wrapper">
+                <label class="file-input-label">
+                    Choose New Picture
+                    {{ form.profile_picture }}
+                </label>
+            </div>
+        </div>
+        {% else %}
+        <div class="profile-picture-section">
+            <span class="profile-picture-label">Add Profile Picture</span>
+            <div class="file-input-wrapper">
+                <label class="file-input-label">
+                    Upload Picture
+                    {{ form.profile_picture }}
+                </label>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Other Form Fields -->
+        {% for field in form %}
+            {% if field.name != 'profile_picture' %}
+            <div class="form-group">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% if field.errors %}
+                    <ul class="errorlist">
+                        {% for error in field.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+            {% endif %}
+        {% endfor %}
+
+        <button type="submit" class="submit-btn">Update Profile</button>
+    </form>
+</div>
+{% endblock %}

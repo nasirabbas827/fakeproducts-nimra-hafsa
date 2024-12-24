@@ -1,0 +1,187 @@
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<style>
+    /* Simple student-friendly CSS */
+    
+    /* Hero section */
+    .hero {
+        background-color: #4CAF50;
+        color: white;
+        text-align: center;
+        padding: 40px 20px;
+        margin-bottom: 30px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    .hero h1 {
+        font-size: 32px;
+        margin-bottom: 15px;
+    }
+
+    .hero p {
+        font-size: 18px;
+    }
+
+    /* Products list */
+    .products-list {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 25px;
+    }
+
+    /* Individual product card */
+    .product {
+        background-color: white;
+        border: 1px solid #ddd;
+        border-radius: 12px;
+        padding: 15px;
+        text-align: center;
+        transition: transform 0.3s ease;
+    }
+
+    .product:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    .product h3 {
+        color: #333;
+        margin: 15px 0;
+    }
+
+    .product p {
+        color: #666;
+        margin: 10px 0;
+        line-height: 1.5;
+    }
+
+    /* Product image container */
+    .image-container {
+        width: 100%;
+        height: 200px;
+        overflow: hidden;
+        border-radius: 8px;
+        margin-bottom: 15px;
+    }
+
+    /* Product image */
+    .img-fluid {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+
+    .product:hover .img-fluid {
+        transform: scale(1.05);
+    }
+
+    /* Price tag style */
+    .price-tag {
+        background-color: #4CAF50;
+        color: white;
+        padding: 5px 15px;
+        border-radius: 20px;
+        display: inline-block;
+        margin: 10px 0;
+    }
+
+    /* View Details button */
+    .btn-primary {
+        display: inline-block;
+        background-color: #4CAF50;
+        color: white;
+        padding: 10px 25px;
+        text-decoration: none;
+        border-radius: 25px;
+        margin-top: 15px;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        background-color: #45a049;
+    }
+
+    /* Sentiment score styling */
+    .sentiment-score {
+        background-color: #f8f9fa;
+        padding: 8px;
+        border-radius: 8px;
+        margin: 10px 0;
+    }
+
+    /* Empty state */
+    .products-list > p {
+        text-align: center;
+        color: #666;
+        grid-column: 1 / -1;
+        padding: 20px;
+        background-color: #f8f9fa;
+        border-radius: 8px;
+    }
+
+    /* Simple responsive design */
+    @media (max-width: 600px) {
+        .hero h1 {
+            font-size: 24px;
+        }
+
+        .hero p {
+            font-size: 16px;
+        }
+
+        .products-list {
+            grid-template-columns: 1fr;
+            padding: 10px;
+        }
+
+        .image-container {
+            height: 180px;
+        }
+    }
+</style>
+
+<div class="hero">
+    <h1>Welcome to Sentiment Analysis for Product Reviews</h1>
+    <p>Discover the most popular products ranked by customer sentiment.</p>
+</div>
+
+<!-- Display all products -->
+<div class="products-list">
+    {% for product in products %}
+    <div class="product">
+        <!-- Image moved to top -->
+        <div class="image-container">
+            <img src="{{ product.picture.url }}" alt="{{ product.name }}" class="img-fluid">
+        </div>
+        
+        <h3>{{ product.name }}</h3>
+        <p>{{ product.description }}</p>
+        
+        <div class="price-tag">
+            <strong>Price:</strong> Pkr {{ product.price }}
+        </div>
+        
+        <!-- Display average sentiment score -->
+        <div class="sentiment-score">
+            {% if product.average_sentiment %}
+                <strong>Average Sentiment Score:</strong> {{ product.average_sentiment }}
+            {% else %}
+                <strong>Average Sentiment Score:</strong> No reviews yet
+            {% endif %}
+        </div>
+
+        <a href="{% url 'product_details' product.productid %}" class="btn-primary">View Details</a>
+    </div>
+    {% empty %}
+    <p>No products available.</p>
+    {% endfor %}
+</div>
+{% endblock %}
